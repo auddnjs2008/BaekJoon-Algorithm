@@ -1,9 +1,26 @@
-const input = require("fs")
+const [n, ...numbers] = require("fs")
   .readFileSync("./input.txt")
   .toString()
   .trim()
-  .split("\n");
+  .split("\n")
+  .map((v) => +v);
 
-const n = +input.shift();
+const solve = (n, wine) => {
+  if (n === 1) return wine[0];
+  else if (n === 2) return wine[0] + wine[1];
+  const dp = new Array(n).fill(0);
+  dp[1] = wine[0];
+  dp[2] = wine[1];
 
-const numbers = input.map((v) => +v);
+  for (let i = 3; i <= n; i++) {
+    dp[i] = Math.max(
+      dp[i - 3] + wine[i - 2] + wine[i - 1],
+      dp[i - 2] + wine[i - 1],
+      dp[i - 1]
+    );
+  }
+
+  return dp[n];
+};
+
+console.log(solve(n, numbers));
