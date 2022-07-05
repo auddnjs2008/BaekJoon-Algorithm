@@ -56,4 +56,52 @@ for (let i = 0; i < N; i++) {
   }
 }
 
-const findShortRoad = () => {};
+const findvisited = Array.from({ length: N }, (v) => Array(N).fill(false));
+
+const findShortRoad = (globalQueue, startValue) => {
+  const queue = [...globalQueue];
+
+  while (queue.length) {
+    const firstNode = queue.shift();
+
+    const curValue = map[firstNode[1]][firstNode[0]];
+
+    if (curValue !== 0 && curValue !== startValue) {
+      result = Math.min(firstNode[2] - 1, result);
+      return;
+    }
+
+    for (let i = 0; i < 4; i++) {
+      const [afterX, afterY] = [
+        firstNode[0] + directions[i][0],
+        firstNode[1] + directions[i][1],
+      ];
+
+      if (
+        isValid(afterX, afterY) &&
+        map[afterY][afterX] !== startValue &&
+        !findvisited[afterY][afterX]
+      ) {
+        findvisited[afterY][afterX] = true;
+        queue.push([afterX, afterY, firstNode[2] + 1]);
+      }
+    }
+  }
+};
+
+let globalQueue = [];
+for (let i = 1; i < cnt; i++) {
+  for (let j = 0; j < N; j++) {
+    for (let k = 0; k < N; k++) {
+      if (map[j][k] === i && !findvisited[j][k]) {
+        findvisited[j][k] = true;
+        globalQueue.push([k, j, 0]);
+      }
+    }
+  }
+
+  findShortRoad(globalQueue, i);
+  globalQueue = [];
+}
+
+console.log(result);
