@@ -7,7 +7,6 @@ const input = require("fs")
 const N = +input.shift();
 
 const map = input.map((v) => v.split(" ").map(Number));
-
 const visited = Array.from({ length: N }, (v) => Array(N).fill(false));
 
 const isValid = (x, y) => x >= 0 && y >= 0 && x < N && y < N;
@@ -51,14 +50,13 @@ const bfs = (node) => {
 for (let i = 0; i < N; i++) {
   for (let j = 0; j < N; j++) {
     if (!visited[i][j] && map[i][j]) {
+      visited[i][j] = true;
       bfs([j, i]);
     }
   }
 }
 
-const findvisited = Array.from({ length: N }, (v) => Array(N).fill(false));
-
-const findShortRoad = (globalQueue, startValue) => {
+const findShortRoad = (globalQueue, startValue, findvisited) => {
   const queue = [...globalQueue];
 
   while (queue.length) {
@@ -90,7 +88,8 @@ const findShortRoad = (globalQueue, startValue) => {
 };
 
 let globalQueue = [];
-for (let i = 1; i < cnt; i++) {
+for (let i = 1; i <= cnt; i++) {
+  const findvisited = Array.from({ length: N }, (v) => Array(N).fill(false));
   for (let j = 0; j < N; j++) {
     for (let k = 0; k < N; k++) {
       if (map[j][k] === i && !findvisited[j][k]) {
@@ -100,7 +99,7 @@ for (let i = 1; i < cnt; i++) {
     }
   }
 
-  findShortRoad(globalQueue, i);
+  findShortRoad(globalQueue, i, findvisited);
   globalQueue = [];
 }
 
